@@ -4,15 +4,14 @@ build:
   os: ubuntu-24.04
   tools:
     python: "latest"
+  commands:
+    # 1. Update pip and install Zensical along with python extensions
+    - python -m pip install --upgrade pip
+    - pip install zensical mkdocstrings-python
 
-jobs:
-  install:
-    - pip install zensical
-  build:
-    html:
-      # Compiles your site into static HTML
-      - zensical build
-  post_build:
-    # Moves the output to the directory Read the Docs expects
+    # 2. Build your documentation static files using Zensical
+    - zensical build
+
+    # 3. Create the directory RTD requires and copy files over
     - mkdir -p $READTHEDOCS_OUTPUT/html/
-    - cp --recursive site/* $READTHEDOCS_OUTPUT/html/
+    - cp -r site/* $READTHEDOCS_OUTPUT/html/
