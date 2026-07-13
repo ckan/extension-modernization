@@ -67,8 +67,21 @@ nav = [
                   "development/database-migrations.md",
                   "development/signals.md",
                   "development/template-helpers.md",
-                  "development/testing.md",
                   "development/typing.md",
+  ] },
+
+  { "Testing" = [
+                  "testing/fixtures.md",
+                  "testing/test-factories.md",
+                  "testing/unit-tests.md",
+                  "testing/actions.md",
+                  "testing/auth-functions.md",
+                  "testing/views.md",
+                  "testing/cli.md",
+                  "testing/helpers.md",
+                  "testing/models.md",
+                  "testing/e2e-playwright.md",
+                  "testing/e2e-cypress.md",
   ] },
   { "Frontend" = [
       "frontend/templates.md",
