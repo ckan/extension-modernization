@@ -111,13 +111,17 @@ class MyPlugin(...): ...
 You can manage and execute migrations using the `ckan db` CLI tool:
 
 ### Check Pending Migrations
+
 To see if there are any database migrations that have not yet been run on the current database instance:
+
 ```bash
-ckan db pending
+ckan db pending-migrations
 ```
 
 ### Run Migrations
+
 To execute all pending migrations and bring your database schema up to the latest revision:
+
 ```bash
 ckan db upgrade
 ```
