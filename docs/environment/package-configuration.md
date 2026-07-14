@@ -292,7 +292,7 @@ When migration completed, you should have following content in specified files
 
 === "babel.cfg"
 
-    This was specified inside `setup.py` in past. You can keep these options inside `setup.py`, but moving them to a separate file will may reduce friction if future and reduce depenency on setuptools.
+    This was specified inside `setup.py` in past. You can keep these options inside `setup.py`, but moving them to a separate file will may reduce friction if future and reduce dependency on setuptools.
 
     ```cfg title="babel.cfg"
     [python: **.py]

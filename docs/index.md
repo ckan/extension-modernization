@@ -12,7 +12,7 @@ Additionally, you'd like to use the latest available tools from CKAN to reduce
 friction during upgrade. Instead of realizing that extension will be broken
 with the next CKAN release and you must do something right now, it always
 better to rely on tools that in worst case will get deprecated after the
-relase, so that you still can afford some level of procrastination and update
+release, so that you still can afford some level of procrastination and update
 the extension when it's convenient for you.
 
 This guide contains collection of quite opionated recommendations for different

@@ -30,7 +30,7 @@ guarantees namespace safety.
 
 ## Best Practices for Modern Helpers
 
-### A. Centralize Configuration Access
+### Centralize Configuration Access
 
 Instead of reading raw configurations inside helpers using
 `tk.config.get(...)`, wrap config parameters in a dedicated `config.py` module
@@ -59,7 +59,7 @@ inside your extension and call the config helper function.
 
 ---
 
-### B. Use Action APIs Instead of Direct DB Queries
+### Use Action APIs Instead of Direct DB Queries
 Older extensions often query database tables (e.g., `model.Session.query(model.PackageExtra)`) directly inside helpers as a fallback when search indexes (Solr) are slow. This bypasses search caches and couples your extension to the internal database schema, which can change between CKAN versions.
 
 !!! tip "Query via search API"
@@ -99,7 +99,7 @@ Older extensions often query database tables (e.g., `model.Session.query(model.P
 
 ---
 
-### C. Write Typed and Annotated Helpers
+### Write Typed and Annotated Helpers
 
 Always supply PEP 484 type annotations for parameters and return types. Even
 though helpers are usually called from templates, where type-checker has no

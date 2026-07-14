@@ -35,7 +35,7 @@ Here is how to set up a plugin using blanket decorators and the `implementations
 
     Plugin is a main entry-point of the extension. When plugin does not do a lot,
     it makes sense to keep all the logic inside `plugin.py`. But when you feel that
-    it becomes hard to manage, don't hesistate refactoring it and extracting logic
+    it becomes hard to manage, don't hesitate refactoring it and extracting logic
     into separate modules.
 
     ```python title="ckanext/myextension/plugin.py"
@@ -96,7 +96,7 @@ Here is how to set up a plugin using blanket decorators and the `implementations
 
 === "cli.py"
 
-    It's possible to specify the mebmers
+    It's possible to specify the members
     manually, by setting global `__all__` variable with names of all members that
     must be used by interface. Most commonly it's used inside `cli.py` as `#!py
     __all__ = ["my_main_command"]`, to avoid registering all the CLI groups
@@ -135,7 +135,7 @@ Here is how to set up a plugin using blanket decorators and the `implementations
     def index(): ... # (1)!
     ```
 
-    1. `blueprints` blanked registers only `Blueprint` instances and it's safe to define any additional function inside this module.
+    1. `blueprints` blanket registers only `Blueprint` instances and it's safe to define any additional function inside this module.
 
 
 === "implementations/"

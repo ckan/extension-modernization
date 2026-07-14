@@ -90,7 +90,7 @@ myextension_custom_js:
 2. `#!yaml extra: {preload: [...]}` adds dependency on other assets. They will
    be loaded before the current asset. Mainly this is used with CKAN JS
    modules: dependency on `base/main` loads module toolset, such as sandbox or
-   module registration function before the plugin and eliminates posibility of
+   module registration function before the plugin and eliminates possibility of
    `ckan.register(...) is undefined` error.
 ---
 

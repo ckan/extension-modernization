@@ -10,7 +10,7 @@ For initial simplification of CSS files you can use available CSS features,
 such as [`@scope`][scope], [nested rules][nested-classes] or
 [CSS-functions][css-functions], that are widely supported in modern
 browsers. For anything else, use [LESS][less], [SASS][sass], or
-[Stilus][stilus]. SCSS is the most common choice across extensions, but nothing
+[Stylus][stylus]. SCSS is the most common choice across extensions, but nothing
 stops you from using other preprocessors, as long as you don't need to modify
 existing CSS framework.
 
@@ -19,7 +19,7 @@ existing CSS framework.
 [css-functions]: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/Functions
 [less]: https://lesscss.org/
 [sass]: https://sass-lang.com/
-[stilus]: https://stylus-lang.com/
+[stylus]: https://stylus-lang.com/
 
 To further improve stylesheet processing, you can use task runner, such as
 [Gulp][gulp]. For example, it can be used to compile, prettify, modernize, combine and
@@ -45,7 +45,7 @@ npm i -d gulp \
 ```
 
 This command will create `package.json` in the current directory, if you don't
-have one yet. And it will add all the dependencies to it. Aditionally, it will
+have one yet. And it will add all the dependencies to it. Additionally, it will
 create `package-lock.json` and `node_modules/` folder where downloaded packages
 are stored.
 

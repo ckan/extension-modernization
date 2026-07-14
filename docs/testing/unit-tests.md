@@ -4,7 +4,8 @@ icon: lucide/terminal
 
 # Unit Tests
 
-Unit tests verify that individual components—like action functions, auth functions, database models, and helper methods—behave correctly in isolation. 
+Unit tests verify that individual components - like action functions, auth
+functions, database models, and helper methods - behave correctly in isolation.
 
 CKAN extensions use **Pytest** as their test runner.
 
@@ -34,7 +35,8 @@ ckanext-myextension/
 
 ## Running Unit Tests
 
-Run your test suite using the `pytest` command line. Specify the path to your testing configuration file (typically `test.ini`):
+Run your test suite using the `pytest` command line. Specify the path to your
+testing configuration file (typically `test.ini`):
 
 ```bash
 # Run all tests
@@ -47,11 +49,27 @@ pytest --ckan-ini=test.ini ckanext/myextension/tests/logic/
 pytest --ckan-ini=test.ini ckanext/myextension/tests/logic/test_action.py
 ```
 
+/// admonition
+    type: tip
+
+You can specify path to config file inside `pyproject.toml`, under
+`tool.pytest.ini_options` section. If you omit `--ckan-ini` when running tests,
+this default value will be used instead.
+
+```toml title="pyproject.toml"
+[tool.pytest.ini_options]
+addopts = "--ckan-ini=test.ini"
+```
+
+///
+
+
 ---
 
 ## Test Filtering & Marks
 
-Use Pytest marks to categorize tests and speed up runs:
+Use Pytest marks to categorize tests and selectively run tests with specific
+group.
 
 ```python
 import pytest
@@ -80,3 +98,16 @@ Measure coverage statistics to identify untested code paths:
 ```bash
 pytest --ckan-ini=test.ini --cov=ckanext.myextension --cov-report=term-missing
 ```
+
+/// admonition
+    type: tip
+
+Include configuration for `coverage` into pyproject to reduce number of CLI arguments.
+
+```toml title="pyproject.toml"
+[tool.coverage.run]
+branch = true
+omit = ["ckanext/myextension/tests/*", "ckanext/myextension/migration/*"]
+source = ["ckanext/myextension"]
+```
+///

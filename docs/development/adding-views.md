@@ -57,7 +57,7 @@ Implement standard Flask routes. Use CKAN's toolkit functions to check
 permissions, render Jinja2 templates, and read request params.
 
 ```python title="views.py"
-@bp.route("/items", methods=["GET"])
+@bp.route("/items")
 def index() -> str:
     """Render items list page."""
     try:
@@ -69,13 +69,13 @@ def index() -> str:
     return tk.render("myextension/index.html", {"items": items})
 
 
-@bp.route("/api/items/<id>", methods=["GET"])
-def api_show(id: str):
+@bp.route("/api/items/<item_id>") # (2)!
+def api_show(item_id: str):
     """API endpoint returning item details."""
     try:
         # If you did not add global 404 error handler,
         # add explicit ObjectNotFound handler
-        item = tk.get_action("myextension_item_show")({}, {"id": id})
+        item = tk.get_action("myextension_item_show")({}, {"id": item_id})
     except tk.NotAuthorized:
         return tk.abort(403, "Not authorized to view the item.")
 
@@ -85,6 +85,13 @@ def api_show(id: str):
 1. You can pass empty context into auth functions and actions, when they are
    called from views. CKAN will add missing `user` and `session` properties
    automatically.
+2. Here you can use `id` as a name of the parameter, but the recommendation is
+   to include entity type into parameter name. In this way you avoid shadowing
+   of global function `id()` and can extend route in future with additional
+   IDs. Think of confusing `resource.show` endpoint, which has `id` pointing at
+   the package and `resource_id` pointint at the resource: it would be much
+   better if parameters were named `package_id` and `resource_id` instead of
+   `id` and `resource_id`.
 
 ---
 

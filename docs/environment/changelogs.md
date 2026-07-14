@@ -27,7 +27,7 @@ The foundation of automated changelogs is **Conventional Commits**. This standar
 * `docs`: Documentation-only changes.
 * `refactor`: A code change that neither fixes a bug nor adds a feature.
 * `test`: Adding missing tests or correcting existing tests.
-* `chore`: Maintainance tasks, dependency updates, or internal tooling changes.
+* `chore`: Maintenance tasks, dependency updates, or internal tooling changes.
 
 ---
 

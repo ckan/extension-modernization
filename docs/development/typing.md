@@ -13,10 +13,13 @@ configure static type checkers like `pyright` and `basedpyright`.
 
 ## Using CKAN's Built-in Types
 
-CKAN core provides pre-defined type definitions for logic context, action APIs, validators, and HTTP responses. You can import these directly from `ckan.types` (or `ckan.types` submodule).
+CKAN core provides pre-defined type definitions for logic context, action APIs,
+validators, and HTTP responses. You can import these directly from
+`ckan.types`.
 
 ### Common Core Types
-* **`Context`**: Types the logic context dictionary passed to action and auth functions (containing the DB `session`, `user` identifier, etc.).
+* **`Context`**: Types the logic context dictionary passed to action and auth
+  functions (containing the DB `session`, `user` identifier, etc.).
 * **`Action`**: The type definition for CKAN action functions.
 * **`Validator`**: Represents schema validation functions.
 * **`ValidatorFactory`**: Represents schema validation factories (like `default()`).
