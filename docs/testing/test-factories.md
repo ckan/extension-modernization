@@ -392,8 +392,7 @@ a development database with mock records.
 ### Basic Generation
 
 Generate a number of entities using built-in factories (aliases include `user`,
-`dataset`, `resource`, `organization`, `group`, `resource-view`, `api-token`,
-`vocabulary`, and `activity`):
+`dataset`, `resource`, `organization`, `group`):
 
 ```bash
 # Generate 5 fake datasets in the database (outputs JSON for each)
@@ -406,10 +405,10 @@ ckan generate fake-data dataset -n 5
 
 If you have defined a custom factory inside your extension (e.g. `FileFactory`
 registered inside `ckanext.myextension.tests.conftest`), you can invoke it by
-passing its full Python import path as the category argument:
+passing its full Python import path as `-f`/`--factory-class` argument:
 
 ```bash
-ckan generate fake-data ckanext.myextension.tests.conftest:FileFactory -n 3
+ckan generate fake-data -f ckanext.myextension.tests.conftest:FileFactory -n 3
 ```
 
 ---
@@ -429,6 +428,6 @@ ckan generate fake-data dataset --title="Special Core Data" \
 For custom factories, pass your specific parameters in the same manner:
 
 ```bash
-ckan generate fake-data ckanext.myextension.tests.conftest:FileFactory \
+ckan generate fake-data -f ckanext.myextension.tests.conftest:FileFactory \
     --name="manual_upload.pdf" --upload="file_content_here"
 ```
