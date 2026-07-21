@@ -60,6 +60,7 @@ nav = [
   { "Development" = [
                   "development/defining-plugins.md",
                   "development/adding-actions.md",
+                  "development/validators.md",
                   "development/adding-views.md",
                   "development/cli-commands.md",
                   "development/config-management.md",

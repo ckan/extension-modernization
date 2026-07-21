@@ -164,8 +164,64 @@ will receive `False` from it and won't pass the authorization check.
 
 ---
 
+## Invoking Actions and Auth Checks
+
+When calling actions or checking permissions within your extension, avoid
+importing and directly calling the Python functions. Always use `get_action`
+and `check_access`.
+
+### Invoking Actions via `get_action`
+
+Never import action functions directly to execute them in code. Always retrieve
+and execute them via `get_action`.
+
+/// admonition
+    type: example
+
+```python
+import ckan.plugins.toolkit as tk
+
+context = {"user": "johndoe"}
+package_dict = tk.get_action("package_show")(context, {"id": package_id})
+```
+
+///
+
+#### Automatic Context Population by `get_action`
+
+When you invoke an action through `get_action`, CKAN enriches the `context`
+dictionary by populating missing standard entries (such as `user` and
+`session`). Because `get_action` guarantees these keys are present in the
+context dictionary, your actions can safely access `context["session"]` or
+`context["user"]` directly without needing defensive `context.get(...)`
+fallbacks.
+
+---
+
+### Authorization Checks via `check_access`
+
+Similarly, perform authorization checks by calling `check_access` rather than
+calling auth functions directly:
+
+
+```python
+tk.check_access("myextension_item_create", context, data_dict)
+```
+
+#### User Model Injection (`auth_user_obj`)
+
+When `check_access` is executed, it inspects the `context["user"]` string (the
+username) and automatically populates `context["auth_user_obj"]` with the
+corresponding `ckan.model.User` database object.
+
+This enables custom auth functions or downstream actions to conveniently
+inspect user attributes (e.g. `user_obj.email`, `user_obj.sysadmin`) directly
+via `context["auth_user_obj"]` without making redundant database queries.
+
+---
+
 ## Auto-Registration
 
-Simply decorate your plugin class with `@tk.blanket.actions` and
-`@tk.blanket.auth_functions` in `plugin.py`. This scans your `logic/action.py`
+Simply decorate your plugin class with `@blanket.actions` and
+`@blanket.auth_functions` in `plugin.py`. This scans your `logic/action.py`
 and `logic/auth.py` files and registers them automatically.
