@@ -15,8 +15,8 @@ better to rely on tools that in worst case will get deprecated after the
 release, so that you still can afford some level of procrastination and update
 the extension when it's convenient for you.
 
-This guide contains collection of quite opionated recommendations for different
-aspcects of extension development in CKAN. Some of them may even look
+This guide contains collection of quite opinionated recommendations for different
+aspects of extension development in CKAN. Some of them may even look
 overcomplicated, but if you choose to follow them, in the end you'll have the
 complete checklist that can be used for CKAN upgrade. And instead of
 smoke-testing the extension praying that no hidden bugs are left after the
