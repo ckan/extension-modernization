@@ -4,7 +4,7 @@ icon: lucide/file-type-2
 
 # Vite & TypeScript
 
-If you wonder how you can improve quality of JavaScript code inside your
+If you wonder how you can improve the quality of JavaScript code inside your
 extension, try using **Vite** and **TypeScript**.
 
 Writing scripts in TypeScript ensures type safety, IDE autocompletions, and
@@ -14,7 +14,7 @@ browser-compatible modules.
 ## Installation
 
 To configure Vite and TypeScript, you need the bundler, the compiler, and
-jquery types(because CKAN includes jQuery). All of them can be installed via
+jquery types (because CKAN includes jQuery). All of them can be installed via
 NPM:
 
 ```sh
@@ -30,9 +30,9 @@ local development dependencies inside `node_modules/`.
 
 ## Configuration
 
-Vite is used to collect and combide scripts and other things into a
+Vite is used to collect and combine scripts and other things into a
 fully-functional web application. We are not going to use its full potential
-and focus only on compiling typescript into javascript. Create the
+and focus only on compiling TypeScript into JavaScript. Create the
 `vite.config.ts` and `tsconfig.json` configurations next to the `package.json`:
 
 ```
