@@ -95,6 +95,68 @@ def api_show(item_id: str):
 
 ---
 
+## Context Autopopulation in Views
+
+When calling actions (`tk.get_action`) or checking permissions
+(`tk.check_access`) inside a Flask blueprint view function, you do **not** need
+to manually populate the `context` dictionary with the current logged-in `user`
+or the database `session`.
+
+CKAN's internal Flask context wrappers automatically intercept logic layer
+calls originating from view routes. Under the hood, CKAN enriches the context
+by injecting the active database session and the currently authenticated
+session user.
+
+For standard actions, passing an empty context dictionary `{}` is the recommended practice.
+
+/// admonition
+    type: example
+
+
+```python
+@bp.route("/item/<item_id>/edit")
+def edit_item(item_id: str):
+    # CKAN automatically populates {} with the logged-in user and active DB session
+    try:
+        tk.check_access("myextension_item_update", {}, {"id": item_id})
+        item = tk.get_action("myextension_item_show")({}, {"id": item_id})
+    except tk.NotAuthorized:
+        return tk.abort(403)
+    except tk.ObjectNotFound:
+        return tk.abort(404)
+
+    return tk.render("myextension/edit.html", {"item": item})
+```
+
+///
+
+
+You should pass explicit context parameters (such as a hardcoded username or a
+specific database state) only if the view explicitly needs to execute logic on
+behalf of a **different** user (for example, an administrator performing a
+resource transfer on behalf of another user, or executing system task tasks via
+an internal daemon context):
+
+/// admonition
+    type: example
+
+```python
+@bp.route("/admin/transfer/<item_id>")
+def admin_transfer(item_id: str):
+    # Only admins can access this route
+    tk.check_access("sysadmin", {}, {})
+
+    # Explicitly run the action on behalf of the target user, not the admin
+    context = {"user": "target_user_name"}
+    tk.get_action("myextension_item_update")(context, {"id": item_id, "owner_id": "new_owner"})
+
+    return "Transferred successfully"
+```
+
+///
+
+---
+
 ## Auto-Registration
 
 Apply the `@tk.blanket.blueprints` decorator to your plugin class in

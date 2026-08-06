@@ -159,19 +159,20 @@ class MyPlugin(p.SingletonPlugin):
     p.implements(p.IActions)
 
     def get_actions(self):
-        return {"package_create": self.custom_package_create}
+        return {"package_create": custom_package_create}
 
-    def custom_package_create(self, context, data_dict):
-        # 1. Run core logic
-        result = tk.get_action("package_create")(context, data_dict)
+@tk.chained_action
+def custom_package_create(next_action, context, data_dict):
+    # 1. Run core logic
+    result = next_action(context, data_dict)
 
-        try:
-            # 2. Run critical custom logic.
-            self.perform_critical_task(result)
-        except ...:
-            # 3. Revert changes if task is failed
-            ...
-        return result
+    try:
+        # 2. Run critical custom logic.
+        self.perform_critical_task(result)
+    except ...:
+        # 3. Revert changes if task is failed
+        ...
+    return result
 ```
 
 [^1]: Actually, you can modify payload of signal, but responsibility for any
