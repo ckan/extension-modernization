@@ -313,6 +313,108 @@ def myextension_item_batch_create(context: types.Context, data_dict: dict[str, A
 
 ---
 
+## Chained Actions
+
+Chained actions allow extensions to intercept, extend, or modify the behavior
+of existing core CKAN actions or actions registered by other extensions,
+instead of completely replacing them. This enables multiple extensions to hook
+into the same action execution sequence.
+
+To define a chained action, use the `@tk.chained_action` decorator. The first
+parameter of a chained action function is always the `next_action` (which
+refers to the next function in the chain or the core CKAN action).
+
+/// admonition
+    type: example
+
+```python title="logic/action.py"
+from typing import Any
+import ckan.plugins.toolkit as tk
+from ckan import types
+
+@tk.chained_action
+def package_create(next_action: Any, context: types.Context, data_dict: dict[str, Any]) -> dict[str, Any]:
+    """Intercept package creation to add custom validation or modify payload."""
+    # 1. Custom logic before the core action runs
+    if "custom_field" not in data_dict:
+        data_dict["custom_field"] = "default_value"
+
+    # 2. Call the next action in the chain (or the core action itself)
+    result = next_action(context, data_dict)
+
+    # 3. Custom logic after execution (e.g. logging, trigger external sync)
+    return result
+```
+
+///
+
+
+/// admonition | Chained Actions vs. Signals for Side-Effects
+    type: tip
+
+If you are hooking into an action not to alter its input parameters or output
+structure, but purely to perform a side-effect (such as sending an email,
+logging, or invalidating external caches on success), **do not use chained
+actions**.
+
+Instead, subscribe to CKAN's built-in **`action_succeeded` signal**. This keeps
+your code loosely coupled, prevents execution overhead, and avoids polluting
+the action execution pipeline. Refer to the [Signals](signals.md) guide for
+details on subscribing to event signals.
+
+///
+
+---
+
+## Chained Auth Functions
+
+Similarly, authorization checks can be chained using the
+`@tk.chained_auth_function` decorator. This is useful when you want to append
+additional permission checks to a core action's authorization rules without
+discarding the existing checks.
+
+The first parameter of a chained auth function is always `next_auth` (which
+refers to the subsequent auth check in the chain).
+
+/// admonition
+    type: example
+
+```python title="logic/auth.py"
+from typing import Any
+import ckan.plugins.toolkit as tk
+from ckan.types import Context
+
+@tk.chained_auth_function
+def package_create(next_auth: Any, context: Context, data_dict: dict[str, Any]) -> dict[str, Any]:
+    """Add extra constraints to package creation authorization."""
+    # 1. Perform custom check first
+    user = context.get("user")
+    if not user:
+         return {"success": False, "msg": "Must be logged in to create packages"}
+
+    # 2. Delegate to the remaining auth checks in the chain
+    return next_auth(context, data_dict)
+```
+
+///
+
+
+
+/// admonition | Decorator Interferences
+    type: tip
+
+
+Be careful when combining `@tk.chained_auth_function` with other auth
+decorators (like `@tk.auth_allow_anonymous_access`). Ensure they are stacked
+correctly so that CKAN's internal security attributes are not stripped or
+bypassed by decorator wrapping orders.
+
+///
+
+
+
+---
+
 ## Auto-Registration
 
 Simply decorate your plugin class with `@blanket.actions` and

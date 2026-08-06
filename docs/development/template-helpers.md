@@ -118,6 +118,41 @@ def my_count_uploaded_resources(pkg: dict[str, Any]) -> int:
 
 ---
 
+## Chained Helpers
+
+Chained helpers allow extensions to modify or extend the behavior of existing
+template helper functions (either CKAN core helpers or helpers registered by
+other plugins) instead of completely overriding them.
+
+To modify existing helper, use the `@tk.chained_helper` decorator. The first
+argument of a chained helper function is always the `next_helper` callable.
+
+/// admonition
+    type: example
+
+```python title="helpers.py"
+from typing import Any
+import ckan.plugins.toolkit as tk
+
+@tk.chained_helper
+def render_datetime(next_helper: Any, datetime_value: Any, *args: Any, **kwargs: Any) -> str:
+    """Prepend an icon or add custom timezone formatting to render_datetime helper."""
+    # 1. Custom pre-processing on arguments if required
+    if datetime_value == "now":
+        datetime_value = get_current_utc_time()
+
+    # 2. Invoke the next helper in the chain
+    formatted_date = next_helper(datetime_value, *args, **kwargs)
+
+    # 3. Custom post-processing on output
+    return f"🕒 {formatted_date}"
+```
+
+///
+
+
+---
+
 ## Auto-Registering Helpers
 
 CKAN extensions register all helper functions automatically by applying the
