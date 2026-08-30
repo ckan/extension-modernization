@@ -90,9 +90,11 @@ import yaml
 import ckan.plugins as p
 import ckan.plugins.toolkit as tk
 
-class MyExtensionPlugin(p.SingletonPlugin):
-    p.implements(p.IConfigDeclaration)
+from typing_extensions import override
 
+class MyExtensionPlugin(p.IConfigDeclaration, p.SingletonPlugin):
+
+    @override
     def declare_config_options(self, declaration: Any, key: Any):
         # 1. Handle CKAN version differences
         if tk.check_ckan_version("2.12"):

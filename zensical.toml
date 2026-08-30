@@ -11,7 +11,7 @@
 # The site_name is shown in the page header and the browser window title
 #
 # Read more: https://zensical.org/docs/setup/basics/#site_name
-site_name = "Modernization of CKAN extension"
+site_name = "CKAN extension development"
 
 # The site_description is included in the HTML head and should contain a
 # meaningful description of the site content for use by search engines.
@@ -27,7 +27,9 @@ site_author = "Serhii Motorniuk"
 # The site_url is the canonical URL for your site. When building online
 # documentation you should set this.
 # Read more: https://zensical.org/docs/setup/basics/#site_url
-#site_url = "https://www.example.com/"
+site_url = "https://extension-modernization.readthedocs.io/"
+
+repo_url = "https://github.com/ckan/extension-modernization"
 
 # The copyright notice appears in the page footer and can contain an HTML
 # fragment.
@@ -55,6 +57,7 @@ nav = [
       "environment/github-workflows.md",
       "environment/publishing.md",
       "environment/changelogs.md",
+      "environment/docker-development.md",
   ] },
 
   { "Development" = [

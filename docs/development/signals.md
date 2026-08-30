@@ -155,9 +155,11 @@ def after_action(self, sender, **kwargs):
 Use this if your post-save action is a mandatory requirement.
 
 ```python
-class MyPlugin(p.SingletonPlugin):
-    p.implements(p.IActions)
+from typing_extensions import override
 
+class MyPlugin(p.IActions, p.SingletonPlugin):
+
+    @override
     def get_actions(self):
         return {"package_create": custom_package_create}
 
