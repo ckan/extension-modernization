@@ -61,6 +61,7 @@ nav = [
   ] },
 
   { "Development" = [
+                  "development/index.md",
                   "development/defining-plugins.md",
                   "development/adding-actions.md",
                   "development/validators.md",
@@ -75,6 +76,7 @@ nav = [
   ] },
 
   { "Testing" = [
+                  "testing/index.md",
                   "testing/fixtures.md",
                   "testing/test-factories.md",
                   "testing/unit-tests.md",
@@ -88,6 +90,7 @@ nav = [
                   "testing/e2e-cypress.md",
   ] },
   { "Frontend" = [
+      "frontend/index.md",
       "frontend/templates.md",
       "frontend/assets.md",
       "frontend/javascript.md",
