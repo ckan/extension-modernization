@@ -77,6 +77,18 @@ When adding a feature or refactoring code, follow this testing progression:
 4. **Test Critical User Journeys**: Use Playwright or Cypress strictly for interactive browser flows that require real DOM or JavaScript execution ([Playwright E2E](e2e-playwright.md)).
 5. **Leverage Shared Infrastructure**: Use Pytest [Fixtures](fixtures.md) (`clean_db`, `ckan_config`, `app`) and [Test Factories](test-factories.md) (`sysadmin`, `user`, `package`) to prepare clean state before each test.
 
+/// admonition | Self-Documenting Tests & Docstrings
+    type: tip
+
+Every test function is recommended to have a short docstring explaining what scenario or assertion it checks in a human-readable manner. Concise test docstrings make it effortless to audit covered functionality, understand test suite scope at a glance, and quickly spot missing use-cases or untested edge cases.
+
+```python
+def test_create_item_unauthenticated():
+    """Verify that unauthenticated requests to create an item raise an authorization error."""
+    # ...
+```
+///
+
 ---
 
 ## Section Map

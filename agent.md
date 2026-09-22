@@ -328,6 +328,8 @@ ckan.module('custom-counter', function (jQuery, _) {
 The test suite runs on Pytest and relies heavily on fixtures and factories for test isolation.
 
 ### Recommended Test Structure
+Every test function **must** include a short, human-readable docstring explaining what scenario or behavior is being tested. This allows developers and AI agents to quickly identify covered functionality and spot missing use cases.
+
 ```python title="tests/test_actions.py"
 import pytest
 from ckan.tests import factories
@@ -338,6 +340,7 @@ from ckan.tests.helpers import call_action
 class TestActions:
 
     def test_show_action(self, item_factory):
+        """Verify that showing an item returns expected metadata for valid item ID."""
         # 1. Initialize data using factories (Black-Box approach)
         item = item_factory()
 

@@ -31,6 +31,18 @@ ckanext-myextension/
                 └── test_views.py    # Flask routing tests
 ```
 
+/// admonition | Test Docstrings & Use-Case Clarity
+    type: tip
+
+Tests should always include a concise docstring explaining what scenario or behavior is being tested in human-readable terms. This makes it straightforward to audit test coverage and easily identify missing use-cases.
+
+```python
+def test_item_update_read_only_field():
+    """Verify that updating read-only fields returns a validation error."""
+    # ...
+```
+///
+
 ---
 
 ## Running Unit Tests
