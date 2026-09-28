@@ -73,6 +73,17 @@ When testing views that require authentication (like dataset creation forms or
 user dashboard pages), you must authenticate the Flask test client. There are
 two primary methods to accomplish this:
 
+/// admonition | Legacy `REMOTE_USER` vs Modern Authentication Methods
+    type: note
+
+In older CKAN test suites, authentication was commonly performed per-request by passing `extra_environ={"REMOTE_USER": user["name"]}` to individual `app.get()` or `app.post()` calls.
+
+In modern CKAN development, you should avoid using `REMOTE_USER` and instead use one of the two modern approaches:
+
+1. **`app.set_session_user(user["name"])`**: Sets and persists the authenticated user session across **all subsequent requests** executed by the `app` client instance.
+2. **`Authorization` Header**: Provides an API token header (`headers={"Authorization": token["token"]}`) for **a single request**. Convenient for authenticating individual requests without affecting session state for subsequent calls.
+///
+
 ### Session Authentication (`set_session_user`)
 
 The easiest way to simulate a logged-in user session is to call the
@@ -117,7 +128,7 @@ pass it inside the request's `headers` dictionary:
 ```python
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 def test_api_view_with_token(self, app: types.FixtureApp, api_token: dict[str, Any]):
-    headers = {"Authorization": token["token"]}
+    headers = {"Authorization": api_token["token"]}
 
     response = app.get(
         "/api/action/myextension_item_list",

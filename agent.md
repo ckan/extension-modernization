@@ -354,7 +354,7 @@ class TestActions:
 ### Critical Pytest Fixtures
 * `ckan_config`: Accesses and patches configuration parameters safely for the duration of a test via `@pytest.mark.ckan_config`.
 * `with_plugins`: Loads and unloads plugins specified in config options before and after tests.
-* `app`: Flask test client instance for testing blueprints and views.
+* `app`: Flask test client instance for testing blueprints and views. Avoid legacy `extra_environ={"REMOTE_USER": ...}`. Use `app.set_session_user(user["name"])` for persisting authenticated session state across all subsequent requests, or `headers={"Authorization": api_token["token"]}` for single-request authentication.
 * `cli` / `with_extended_cli`: Click command runners. Apply `with_extended_cli` to register dynamic commands from plugins.
 * `clean_db` / `clean_index` / `clean_redis`: Wipes database tables, Solr indexes, and Redis keys before running a test.
 
