@@ -91,7 +91,7 @@ myextension_custom_js:
    be loaded before the current asset. Mainly this is used with CKAN JS
    modules: dependency on `base/main` loads module toolset, such as sandbox or
    module registration function before the plugin and eliminates possibility of
-   `ckan.register(...) is undefined` error.
+   `ckan.module(...) is undefined` error.
 ---
 
 ## Injecting Assets in Templates

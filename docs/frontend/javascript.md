@@ -98,10 +98,10 @@ window.ckan.module("myextension-uploader", function ($) {
 
     initialize() {
       // 'this.el' (JQuery) and 'this.options' are fully type-safe
-      this.el.on("change", this.options.targetInput, this._onFileSelected);
+      this.el.on("change", this.options.targetInput, this._onFileSelected.bind(this));
     },
 
-    _onFileSelected(event: Event) {
+    _onFileSelected(event: JQuery.ChangeEvent) {
       const input = event.target as HTMLInputElement;
       if (input.files) {
         Array.from(input.files).forEach(file => this.queue.add(file));

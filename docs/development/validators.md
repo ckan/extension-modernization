@@ -22,6 +22,7 @@ Accepts only the field's current value. It returns the transformed value or rais
     type: example
 
 ```python
+from typing import Any
 import ckan.plugins.toolkit as tk
 
 def lowercase_string(value: Any) -> str:
@@ -153,6 +154,7 @@ Raised by CKAN's schema loader if a schema references a validator name string th
 You can run validation schemas dynamically against any python dictionary using `tk.navl_validate`. This is useful for ad-hoc validation outside of formal action workflows:
 
 ```python
+from typing import Any
 import ckan.plugins.toolkit as tk
 from ckan.types import Context
 
@@ -164,7 +166,7 @@ def validate_custom_payload(raw_dict: dict[str, Any], context: Context):
     }
 
     # 2. Run navl_validate
-    converted_data, errors = tk.navl_validate(schema, raw_dict, context)
+    converted_data, errors = tk.navl_validate(raw_dict, schema, context)
 
     # 3. Handle errors
     if errors:

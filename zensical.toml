@@ -17,7 +17,7 @@ site_name = "CKAN extension development"
 # meaningful description of the site content for use by search engines.
 #
 # Read more: https://zensical.org/docs/setup/basics/#site_description
-site_description = "A new project generated from the default template project."
+site_description = "Version-aware CKAN extension development, testing, and agent review guidance."
 
 # The site_author attribute. This is used in the HTML head element.
 #
@@ -96,6 +96,7 @@ nav = [
       "frontend/javascript.md",
       "frontend/css.md",
   ] },
+  { "Agent plugin" = ["agents/index.md", "agents/testing.md"] },
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

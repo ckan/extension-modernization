@@ -8,7 +8,7 @@ To ensure code quality and prevent regressions, CKAN extensions run
 automated checks on every push and pull request. This includes code syntax
 linting and containerized test execution.
 
-This guide outlines the standard GitHub Actions workflows configuration based on the patterns found in [test.yml (ckanext-theming)](file:///home/sergey/projects/core/ckanext-theming/.github/workflows/test.yml) and [test.yml (ckanext-files)](file:///home/sergey/projects/core/ckanext-files/.github/workflows/test.yml).
+This guide outlines the standard GitHub Actions workflows configuration based on the patterns found in [test.yml (ckanext-theming)](https://github.com/DataShades/ckanext-theming/blob/master/.github/workflows/test.yml) and [test.yml (ckanext-files)](https://github.com/DataShades/ckanext-files/blob/master/.github/workflows/test.yml).
 
 ---
 
@@ -29,7 +29,7 @@ Typically, the workflow consists of two main jobs:
 2. **`test`**: A comprehensive container-based test execution environment with dedicated database and search services.
 
 And it's recommended to add `publish` job, that uploads package to PyPI anytime
-you create a new version tag. Check [publishing guide](publishing) for more
+you create a new version tag. Check [publishing guide](publishing.md) for more
 details.
 
 ---
@@ -39,6 +39,11 @@ details.
 The linting job checks formatting rules and flags code complexity issues using **Ruff** (configured in your `pyproject.toml`).
 
 ```yaml title=".github/workflows/test.yml"
+on:
+  push:
+  pull_request:
+  workflow_call: # Allows the publishing workflow to reuse these checks
+
 jobs:
   lint:
     runs-on: ubuntu-latest

@@ -95,7 +95,7 @@ def save_stream(stream: PUploadStream):
 [Pyright](https://github.com/microsoft/pyright) is Microsoft's static type checker. [Basedpyright](https://github.com/DetachHead/basedpyright) is a popular fork that introduces stricter defaults, CLI enhancements, and extra check rules.
 
 ### Configuring in `pyproject.toml`
-Configure the type checker inside `pyproject.toml` under `[tool.pyright].
+Configure the type checker inside `pyproject.toml` under `[tool.pyright]`.
 
 !!! tip "Path Resolution (`extraPaths`)"
     To type-check CKAN core code or other extensions you import, use the `extraPaths` directive to point to the local paths of those packages in your development workspace.

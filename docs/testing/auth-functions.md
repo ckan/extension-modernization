@@ -53,7 +53,7 @@ def test_direct_auth_check(self, user):
 
     # Assert return structure
     assert not result["success"]
-    assert "Must be a sysadmin" in result["msg"]
+    assert "Only sysadmins can create items" in result["msg"]
 ```
 
 ---

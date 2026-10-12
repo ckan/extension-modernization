@@ -33,7 +33,7 @@ In order to use it, you need Gulp itself, and a number of additional
 packages. All of them can be installed via NPM or similar package manager.
 
 ```sh
-npm i -d gulp \
+npm i -D gulp \
          gulp-clean-css \
          gulp-if \
          gulp-postcss \

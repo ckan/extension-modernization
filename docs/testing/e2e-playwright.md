@@ -37,6 +37,7 @@ Add `ckan.site_url` to playwright's browser context. It allows using not
 fully-qualified URLs in tests.
 
 ```python title="conftest.py"
+import pytest
 
 @pytest.fixture
 def browser_context_args(browser_context_args, ckan_config):
@@ -104,10 +105,10 @@ class TestUIPages:
         header = page.locator(".page-header")
         expect(header).to_contain_text("Items List")
 
-    def test_authorized_user_create(self, page: Page, login: Any):
+    def test_authorized_user_create(self, page: Page, login: Any, user):
         """Verify logged-in users can create records via form."""
         # 1. Log in
-        login("testuser")
+        login(user)
 
         # 2. Go to creation form page
         page.goto("/my-extension/items/new")

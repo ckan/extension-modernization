@@ -86,6 +86,7 @@ Here is how to set up a plugin using blanket decorators and the `implementations
     ```py title="ckanext/myextension/logic/action.py"
     from __future__ import annotations
 
+    from typing import Any
     from ckan import types
 
     def _ignored_by_blanket(): ...
@@ -127,7 +128,7 @@ Here is how to set up a plugin using blanket decorators and the `implementations
 
     ```py title="ckanext/myextension/views.py"
 
-    from flask import Bluepint
+    from flask import Blueprint
 
     bp = Blueprint("my_ext", __name__)
 
@@ -150,7 +151,7 @@ Here is how to set up a plugin using blanket decorators and the `implementations
     from .package_controller import PackageController
 
     __all__ = [
-        "PackageControler",
+        "PackageController",
     ]
     ```
 
@@ -165,11 +166,12 @@ Here is how to set up a plugin using blanket decorators and the `implementations
     ```py title="ckanext/myextension/implementations/package_controller.py"
     from __future__ import annotations
 
+    import logging
     from typing import Any
     from typing_extensions import override
 
     import ckan.plugins as p
-    from ckan import types
+    from ckan import model, types
 
     log = logging.getLogger(__name__)
 

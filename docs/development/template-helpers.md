@@ -84,9 +84,10 @@ Older extensions often query database tables (e.g., `model.Session.query(model.P
 === "Modern (Action query)"
 
     ```python
+    from typing import Any
     import ckan.plugins.toolkit as tk
 
-    def yukon_get_featured_datasets() -> list[dict[str, Any]]:
+    def myextension_get_featured_datasets() -> list[dict[str, Any]]:
         # Resolves via Solr search index - fast, cached, and API-compliant
         return tk.get_action("package_search")(
             {},
@@ -107,6 +108,8 @@ power, typing information can be used to detect internal anomalies inside
 helper implementation.
 
 ```python
+from typing import Any
+
 def my_count_uploaded_resources(pkg: dict[str, Any]) -> int:
     """Counts the number of uploaded resources in a package."""
     count = 0

@@ -9,7 +9,8 @@ extension, try using **Vite** and **TypeScript**.
 
 Writing scripts in TypeScript ensures type safety, IDE autocompletions, and
 robust compile-time error checking, while Vite bundles the code into optimized,
-browser-compatible modules.
+browser-compatible modules. Vite only transpiles TypeScript and does not
+type-check it: run `npx tsc --noEmit` to get compile-time errors.
 
 ## Installation
 
@@ -18,7 +19,7 @@ jquery types (because CKAN includes jQuery). All of them can be installed via
 NPM:
 
 ```sh
-npm i -d vite \
+npm i -D vite \
          typescript \
          @types/jquery
 ```
@@ -97,8 +98,9 @@ export default defineConfig({
 });
 ```
 
-1. Disable erasing the public directory to prevent Vite from rewriting or
-   clearing static assets (like images) placed in `assets/public/`.
+1. Disable Vite's public directory handling, so Vite does not copy static
+   files into the `assets/` output folder. `emptyOutDir: false` below keeps
+   Vite from clearing the existing contents of that folder.
 2. Prepend a semicolon `;` before the IIFE chunk.
 3. Define the main entry point file. This file must import all other TypeScript modules.
 4. Output the build format as an IIFE (Immediately Invoked Function Expression) so it can run directly in browsers without module loaders.
@@ -268,7 +270,7 @@ window.ckan.module("myextension-uploader", function ($) {
 
     initialize() {
       // 1. Autocomplete: typing 'this.el.' will suggest JQuery methods like 'on', 'off', 'find'
-      this.el.on("click", this.options.selector, this._onClick);
+      this.el.on("click", this.options.selector, this._onClick.bind(this));
 
       // 2. Typo Protection:
       // If you type 'this.options.actions' (plural), the compiler throws:
@@ -276,7 +278,7 @@ window.ckan.module("myextension-uploader", function ($) {
       console.log(this.options.action);
     },
 
-    _onClick(event: Event) {
+    _onClick(event: JQuery.ClickEvent) {
       event.preventDefault();
 
       // 3. API Parameter Check:

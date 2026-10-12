@@ -51,6 +51,10 @@ on:
       - '*.*.*' # Triggers on semantic version tags (e.g. 1.0.2)
 
 jobs:
+  test:
+    # Reuse the CI workflow from the GitHub CI/CD Workflows guide
+    uses: ./.github/workflows/test.yml
+
   validate:
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +74,7 @@ jobs:
           fi
 
   publish:
-    needs: validate
+    needs: [validate, test]
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # MANDATORY for Trusted Publishing (OIDC)

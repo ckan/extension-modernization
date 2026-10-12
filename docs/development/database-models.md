@@ -90,9 +90,13 @@ If you know that you'll be working with CKAN v2.12 and newer, you can use more
 modern, SQLAlchemy v2 definition of model, that relies on dataclasses.
 
 ```python title="model/item.py"
-from typing import Annotated
-from sqlalchemy.orm import Mapped, mapped_column
+from datetime import datetime
+from typing import Annotated, Any, ClassVar
+import sqlalchemy as sa
+from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
 from ckan import model
+from ckan.model.types import make_uuid
+from ckan.lib.dictization import table_dictize
 
 text = Annotated[str, mapped_column(sa.TEXT)]
 
@@ -104,7 +108,7 @@ class MyExtensionItem:
 
     __table_args__: ClassVar[tuple[Any, ...]] = (
         sa.ForeignKeyConstraint(
-            ["id"],
+            ["owner_id"],
             ["user.id"],
             ondelete="CASCADE",
         ),
@@ -114,7 +118,7 @@ class MyExtensionItem:
     owner_id: Mapped[text | None]
 
     created: Mapped[datetime] = mapped_column(default=sa.func.now())
-    id: Mapped[text] = mapped_column(primary_key=True, default=make_uuid)
+    id: Mapped[text] = mapped_column(primary_key=True, default_factory=make_uuid)
 
     owner: Mapped[model.User] = relationship(
         model.User,
@@ -201,7 +205,7 @@ from ckan.lib.dictization import table_dictize
 class MyExtensionItem(Base):
     # ... columns and attributes ...
 
-    def dictize(self, include_owner_details: bool = False) -> dict[str, Any]:
+    def dictize(self, *, include_owner_details: bool = False) -> dict[str, Any]:
         """Convert the database record to a serialized dictionary."""
         result = table_dictize(self, {})
 
@@ -235,7 +239,7 @@ stmt = sa.select(MyExtensionItem).order_by(MyExtensionItem.created.desc())
 items = session.scalars(stmt)
 
 # Remove records
-stmt = sa.delete(MyExtensionItem).where(MyExtensionItem.name == name)
+stmt = sa.delete(MyExtensionItem).where(MyExtensionItem.title == "My Item")
 items = session.execute(stmt)
 session.commit()
 

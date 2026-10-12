@@ -53,7 +53,7 @@ docker run -d --name ckan-web \
   -e CKAN_SOLR_URL=http://ckan-solr:8983/solr/ckan \
   -e CKAN_REDIS_URL=redis://ckan-redis:6379/0 \
   -e CKAN_SITE_URL=http://localhost:5000 \
-  ckan/ckan:2.10
+  ckan/ckan-base:2.10
 ```
 
 Once started, navigate to [http://localhost:5000](http://localhost:5000) to view the clean, running CKAN portal.
@@ -126,7 +126,7 @@ CKAN___SCHEMING__DATASET_SCHEMAS=ckanext.scheming:ckan_dataset.json
 
 ---
 
-## The `CKAN_PLUGINS` vs. `CKAN__PLUGINS` Mismatch
+## Enabling Plugins with `CKAN__PLUGINS`
 
 If you add your extension's plugin to `.env` but find it is not active upon container boot, check the container logs:
 
@@ -135,20 +135,20 @@ If you add your extension's plugin to `.env` but find it is not active upon cont
 ```
 
 ### The Cause
-The boot sequence of `ckan-docker` occurs in two separate scopes:
-1. **`prerun.py` Script**: Runs first to prepare the database and configure the static `/srv/app/ckan.ini` file. It reads the **`CKAN_PLUGINS`** (single underscore) environment variable.
-2. **`ckanext-envvars`**: Runs inside the Python application to override settings at runtime. It reads **`CKAN__PLUGINS`** (double underscore).
+The boot sequence writes the plugin list into the static `/srv/app/ckan.ini`
+file before CKAN starts. In the official `ckan/ckan-base` and `ckan/ckan-dev`
+images (2.9 to 2.12, built from the `ckan/ckan-docker-base` repository),
+the **`prerun.py`** script reads it from the **`CKAN__PLUGINS`** (double
+underscore) environment variable.
+`CKAN_PLUGINS` (single underscore) is not read by these images.
 
-If you only set `CKAN__PLUGINS` in your environment, the `prerun.py` script will fall back to default plugins during database migrations, causing errors.
+If your plugin is missing from `CKAN__PLUGINS`, it is not written into
+`ckan.ini` and is not loaded.
 
 ### The Fix
-Always define both variables in your `.env` file to ensure the list of active plugins is synchronized during boot and runtime:
+Add your plugin to `CKAN__PLUGINS` in your `.env` file:
 
 ```env
-# Read by prerun.py
-CKAN_PLUGINS=image_view text_view datastore datapusher envvars scheming_datasets
-
-# Read by ckanext-envvars
 CKAN__PLUGINS=image_view text_view datastore datapusher envvars scheming_datasets
 ```
 
@@ -160,7 +160,7 @@ If your extension requires custom database tables, run the alembic migrations fr
 
 ```bash
 # Open interactive shell in ckan-dev container
-docker exec -it ckan-dev /bin/bash
+bin/compose exec ckan-dev /bin/bash
 
 # Inside container: apply database migrations
 ckan db upgrade -p my_plugin_name
@@ -174,5 +174,5 @@ To execute your extension's test suite inside the container environment (with co
 
 ```bash
 # Execute pytest on your extension's tests directory
-docker exec -it ckan-dev pytest --ckan-ini=/srv/app/ckan.ini /srv/app/src_extensions/ckanext-scheming/ckanext/scheming/tests/
+bin/compose exec ckan-dev pytest --ckan-ini=/srv/app/ckan.ini /srv/app/src_extensions/ckanext-scheming/ckanext/scheming/tests/
 ```

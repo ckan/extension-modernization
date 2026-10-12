@@ -31,7 +31,7 @@ graph TD
   capabilities with [CKAN's interface system](defining-plugins.md).
 * **Logic**: Encapsulates core domain operations in
   [actions](adding-actions.md), enforces input [validation](validators.md), and
-  guards access via [auth functions](adding-actions/#auth-functions).
+  guards access via [auth functions](adding-actions.md#auth-functions).
 * **Data**: Manages persistent state using SQLAlchemy [database
   models](database-models.md) and version-controlled [database
   migrations](database-migrations.md).
@@ -97,7 +97,7 @@ this standard workflow:
     Complete the feature integration:
 
     * Declare custom extension [parameters](config-management.md) in
-      `config_declaration.py` with fallback defaults.
+      `config_declaration.yaml` with fallback defaults.
     * Use `ISignal` to broadcast or react to system [events](signals.md) without tight coupling.
     * Annotate interface implementations with `@override` and [type
       hints](typing.md) to maintain strict safety.

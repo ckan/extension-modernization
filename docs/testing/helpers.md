@@ -44,7 +44,7 @@ import ckan.plugins.toolkit as tk
 import pytest
 
 @pytest.mark.usefixtures("with_plugins")
-def test_helper_registration(self):
+def test_helper_registration():
     """Verify the helper is registered and accessible via toolkit."""
     result = tk.h.myextension_format_filesize(1024 * 1024)
     assert result == "1.00 MiB"
