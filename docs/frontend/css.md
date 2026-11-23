@@ -57,14 +57,14 @@ CKAN is translated into many languages and supports Right-to-Left layouts. If yo
 
 Instead of using "left" and "right" keywords, you can use better CSS properties
 that natively support different writing modes. For example, if you use
-`margin-inline-start` and `float: inline-end` in the previous example, there
+`margin-inline-start` and `float: inline-start` in the previous example, there
 will be no need in custom overrides inside `main-rtl.scss`.
 
 
 ```scss
 .my-card {
   margin-inline-start: 20px;
-  float: inline-end;
+  float: inline-start;
 }
 ```
 
@@ -74,7 +74,7 @@ will be no need in custom overrides inside `main-rtl.scss`.
 
 ## Best Practices for Styling
 
-* **Avoid Hardcoded Colors**: Use CSS variables or SASS variables corresponding to CKAN theme variables (e.g. `var(--primary)`, `var(--body-bg)`) to ensure your extension matches the active theme color palette automatically.
+* **Avoid Hardcoded Colors**: Use CSS variables or SASS variables corresponding to CKAN theme variables (e.g. `var(--bs-primary)`, `var(--bs-body-bg)`) to ensure your extension matches the active theme color palette automatically.
 * **Namespace Class Names**: Prefix CSS classes with your extension name (e.g. `.ckanext-myext-card` instead of `.card`) to prevent rule overriding and global style leaks.
 * **Optimize Selectors**: Keep CSS selectors flat. Highly nested selectors (e.g. `.content .sidebar .nav ul li a`) slow down rendering performance and make it difficult to write overrides.
 

@@ -27,8 +27,9 @@ graph TD
   extend core CKAN pages, and render reusable template snippets
   ([Templates](templates.md)).
 * **Asset Bundling**: WebAssets manifests bundle, minify, and register CSS/JS
-  assets ([Assets](assets.md)). Public files must be declared within asset
-  bundles in `webassets.yml` rather than served directly as loose static files.
+  assets ([Assets](assets.md)). Scripts and stylesheets must be declared within
+  asset bundles in `webassets.yml` rather than served directly as loose static
+  files.
 * **Client-Side Interactivity**: Scoped JavaScript modules or TypeScript
   components handle dynamic client behaviors using CKAN's `ckan.module`
   framework ([JavaScript](javascript.md)).
@@ -53,7 +54,7 @@ Jinja2 templates extend base CKAN templates using `{% ckan_extends %}` and outpu
 ### 3. Asset Loading via WebAssets
 Templates load asset bundles by referencing registered asset library names ([Assets](assets.md)):
 ```html
-{% snippet 'snippets/asset.html', meta="myextension/main_assets" %}
+{% asset 'myextension/main_assets' %}
 ```
 
 * Asset bundles specified in `webassets.yml` automatically concatenate scripts,
@@ -66,7 +67,7 @@ Client-side interactivity is bound directly to HTML elements using data attribut
     <!-- Component markup -->
 </div>
 ```
-CKAN's module loader automatically instantiates the corresponding JavaScript module when the element enters the DOM.
+CKAN's module loader automatically instantiates the corresponding JavaScript module when the page loads. Elements added to the DOM later must be initialized explicitly with `ckan.module.initializeElement(element)`.
 
 ---
 

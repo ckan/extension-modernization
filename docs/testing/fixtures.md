@@ -240,17 +240,17 @@ tests.
 
 ```python
 @pytest.fixture(scope="session")
-def global_fixture()
+def global_fixture():
     data = []
     yield data # (1)!
 
     assert len(data) == 2, "Not all tests were executed" #(2)!
 
-def test_one(data):
-    data.append(1)
+def test_one(global_fixture):
+    global_fixture.append(1)
 
-def test_two(data):
-    data.append(2)
+def test_two(global_fixture):
+    global_fixture.append(2)
 ```
 
 1. You can `yield` result from fixture. In this case, the rest of fixture's
@@ -324,7 +324,7 @@ There are two main cases for fixture parametrization. First, the fixture itself
 parametrized and whenever it's requested by the test, test will be executed
 multiple times with every fixture version.
 
-To parametrize the fixture, add `param=VALUES` to the `fixture`
+To parametrize the fixture, add `params=VALUES` to the `fixture`
 decorator. Unlike tests, parameters do not come into fixture by name. Instead
 you have to use separate fixture `request` and access its attribute `param`:
 the current value of parameter will be stored there.
@@ -386,8 +386,9 @@ at all for filesystem or memory backend.
 ### `tmp_path: pathlib.Path`
 
 A built-in Pytest fixture that provides a unique temporary directory path for
-each test function. The directory is automatically cleaned up and deleted after
-the test finishes.
+each test function. The directory is not deleted right after the test: pytest
+keeps the temporary directories of the last few runs and removes older ones
+automatically.
 
 /// admonition
     type: example
@@ -514,7 +515,7 @@ all requests will be made on behalf of specified user.
 ```python
 def test_items_view(app: types.FixtureApp, user: dict[str, Any]):
     app.set_session_user(user["name"])
-    response = app.get("/dashboard")
+    response = app.get("/dashboard/datasets")
     assert response.status_code == 200
 ```
 
@@ -529,7 +530,7 @@ header on every request instead.
 
 ```python
 def test_items_view(app: types.FixtureApp, api_token: dict[str, Any]):
-    response = app.get("/dashboard", headers={"Authorization": api_token["token"]})
+    response = app.get("/dashboard/datasets", headers={"Authorization": api_token["token"]})
     assert response.status_code == 200
 ```
 
@@ -651,9 +652,10 @@ def test_cache_layer():
 
 ### `provide_plugin: ckan.types.FixtureProvidePlugin`
 
-A helper fixture that programmatically registers and instantiates a plugin
-class for the duration of the test, without needing to declare it inside
-entrypoints of the python package.
+Available since CKAN v2.12. A helper fixture that programmatically registers a
+plugin class for the duration of the test, without needing to declare it inside
+entrypoints of the python package. The plugin is not loaded automatically: load
+it in the test (and unload it afterwards), or use `with_plugins`.
 
 /// admonition
     type: example
@@ -662,7 +664,11 @@ entrypoints of the python package.
 ```python
 def test_temporary_plugin(provide_plugin: types.FixtureProvidePlugin):
     provide_plugin("my_mock_plugin", MyMockPluginClass)
-    # Plugin is loaded and active for this test
+    plugins.load("my_mock_plugin")
+    try:
+        assert plugins.plugin_loaded("my_mock_plugin")
+    finally:
+        plugins.unload("my_mock_plugin")
 ```
 
 ///
@@ -704,7 +710,7 @@ def test_action():
 /// admonition | Using marks
     type: tip
 
-The fixture can be used as mark. It iterates over all arguments and appends
+Since CKAN v2.12, the fixture can be used as mark. It iterates over all arguments and appends
 them to the list of ``ckan.plugins`` before loading. This can be used to
 enable few plugins **in addition** to any plugins that are already
 specified by the ``ckan.plugins`` option.
@@ -743,14 +749,18 @@ def test_request_headers():
 
 ### `with_test_worker: None`
 
-Spawns a mock background worker thread (an RQ worker) that executes jobs synchronously in the main thread process. This allows you to test asynchronous background task flows (like email delivery or file parsing) inline.
+Patches RQ workers so that jobs are executed in the main process, without
+forking. It does not start a worker by itself: enqueue the job, then run a
+worker in burst mode to execute queued jobs inline. This allows you to test
+asynchronous background task flows (like email delivery or file parsing).
 
 ```python
 @pytest.mark.usefixtures("clean_queues", "with_test_worker")
 def test_async_job():
     # Queue an asynchronous job
-    tk.get_action("enqueue_job")(...)
-    # Job executes synchronously and results are available instantly
+    tk.enqueue_job(my_job_function, [42])
+    # Execute all queued jobs in the current process
+    jobs.Worker().work(burst=True)
 ```
 
 ---
@@ -807,7 +817,7 @@ def test_file_resource(create_with_upload, package: dict[str, Any]):
 
 ### `reset_storages: ckan.types.FixtureResetStorages`
 
-Reload file storages using updated configuration.
+Reload file storages using updated configuration. Available since CKAN v2.12.
 
 ```python
 def test_storage_override(ckan_config, monkeypatch, reset_storages):

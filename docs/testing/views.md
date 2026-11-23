@@ -53,7 +53,7 @@ def test_item_create_submission(self, app: types.FixtureApp, user: dict[str, Any
     }
 
     # Authenticate the session
-    app.set_session_user(user)
+    app.set_session_user(user["name"])
 
     # Dispatch POST request simulating form submit
     response = app.post(
@@ -87,20 +87,20 @@ In modern CKAN development, you should avoid using `REMOTE_USER` and instead use
 ### Session Authentication (`set_session_user`)
 
 The easiest way to simulate a logged-in user session is to call the
-`set_session_user()` method on the `app` client:
+`set_session_user()` method on the `app` client. It was added in CKAN v2.12;
+on v2.11 use token authentication described below.
 
 ```python
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 def test_dashboard_authenticated(self, app, user):
     app.set_session_user(user["name"])
 
-    response = app.get("/dashboard")
+    response = app.get("/dashboard/datasets")
     assert response.status_code == 200
-    assert f"Welcome, {user['name']}" in response.body
 
-    app.set_session_user()
+    app.set_session_user(None)
 
-    response = app.get("/dashboard", follow_redirects=False) # (1)!
+    response = app.get("/dashboard/datasets", follow_redirects=False) # (1)!
     assert response.status_code == 302
 ```
 
@@ -187,8 +187,6 @@ def test_items_view_content(app):
     assert create_button is not None
     assert "Create item" in create_button.text.strip()
 ```
-
-!!! tip ""
 
 /// admonition | BeautifulSoup Best Practices
     type: tip

@@ -1,0 +1,9 @@
+{
+  "name": "extension-modernization",
+  "version": "0.1.0",
+  "description": "Version-aware CKAN extension guidance, topic skills, and independent code review.",
+  "author": {"name": "CKAN Extension Guidelines contributors"},
+  "homepage": "https://extension-modernization.readthedocs.io/",
+  "repository": "https://github.com/ckan/extension-modernization",
+  "skills": "./.agents/skills/"
+}

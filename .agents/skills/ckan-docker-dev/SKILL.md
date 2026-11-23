@@ -1,77 +1,20 @@
 ---
 name: ckan-docker-dev
-description: Developing, mounting extensions, and configuring env variables inside the ckan-docker environment.
+description: Set up, diagnose, or change a CKAN Docker/Compose development environment, extension mounts, plugin variables, or container test commands; use only for a detected Docker workspace.
 ---
 
-# CKAN Docker Development Guide
+# CKAN Docker development
 
-This skill provides comprehensive instructions on developing CKAN extensions inside Docker containers.
+For implementation, follow the [shared lifecycle](../ckan-development/references/workflow.md)
+once per task, including checks and the review offer at handoff.
+This explicit topic request already selects the topic; do not restart routing.
+For questions, planning, or reviewer work, read technical references only; do
+not implement or dispatch a reviewer. Reviewer context never starts a lifecycle.
 
----
+Resolve references from this installed skill's directory. Select only applicable
+sections for the target project's supported versions and existing tooling.
 
-## Extension Installation Workflow
-
-To develop an extension locally, place its source code in your host workspace and compile it into the development container.
-
-1. **Volume Mount**: Place the extension source folder inside the host's `src/` directory (which maps to `/srv/app/src_extensions` inside the container).
-2. **Compile Source**: Install the extension in editable mode inside the container:
-   ```bash
-   bin/install_src
-   ```
-3. **Restart Service**: Force Python's path registry to reload:
-   ```bash
-   bin/restart
-   ```
-
----
-
-## Environment Variables Mapping
-
-Docker configurations are loaded from the local `.env` file and translated to `ckan.ini` keys via `ckanext-envvars`.
-
-### Variable Conversion Format
-* Convert keys to uppercase.
-* Replace dots (`.`) with double underscores (`__`).
-* Prepend `CKAN__` for core options and `CKAN___` for custom extension options.
-
-| `ckan.ini` Option | `.env` Variable |
-| :--- | :--- |
-| `ckan.site_title` | `CKAN__SITE_TITLE` |
-| `scheming.dataset_schemas` | `CKAN___SCHEMING__DATASET_SCHEMAS` |
-
-```env
-# Example configuration in .env
-CKAN___SCHEMING__DATASET_SCHEMAS=ckanext.scheming:dataset.json
-```
-
----
-
-## The `CKAN_PLUGINS` vs. `CKAN__PLUGINS` Mismatch
-
-To prevent plugin loading failures on container boot, understand the boot scripts.
-
-* **`CKAN_PLUGINS` (Single Underscore)**: Read by the `prerun.py` startup script to write configurations to `/srv/app/ckan.ini` and run core DB migrations before CKAN boots.
-* **`CKAN__PLUGINS` (Double Underscore)**: Read by `ckanext-envvars` at runtime inside the Python application.
-
-Define **both** variables in your `.env` file to ensure the list of plugins matches between boot setup and application runtime:
-
-```env
-CKAN_PLUGINS=image_view text_view datastore datapusher envvars scheming_datasets
-CKAN__PLUGINS=image_view text_view datastore datapusher envvars scheming_datasets
-```
-
----
-
-## Container Shell Access and Migrations
-
-Use `docker exec` to run administrative commands inside the running development container.
-
-### Execute Database Upgrades for Extensions
-```bash
-docker exec -it ckan-dev ckan db upgrade -p my_plugin_name
-```
-
-### Run Tests Inside Container
-```bash
-docker exec -it ckan-dev pytest --ckan-ini=/srv/app/ckan.ini /srv/app/src_extensions/ckanext-myextension/
-```
+| When relevant | Reference |
+| --- | --- |
+| Identify the distribution and commands before following a recipe | [docker development](../../../docs/environment/docker-development.md) |
+| CI containers, when changing CI rather than local Compose | [github workflows](../../../docs/environment/github-workflows.md) |

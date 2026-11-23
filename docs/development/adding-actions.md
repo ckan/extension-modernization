@@ -137,12 +137,8 @@ def myextension_item_create(context: Context, data_dict: dict[str, Any]) -> dict
 
     Only administrators are allowed to create items.
     """
-    # check if user is admin
-    is_admin = tk.check_access("sysadmin", context, {})
-    if not is_admin:
-        return {"success": False, "msg": "Only sysadmins can create items"}
-
-    return {"success": True}
+    # Sysadmins never reach this function (see Authorization Shortcuts below)
+    return {"success": False, "msg": "Only sysadmins can create items"}
 ```
 
 ///
@@ -254,7 +250,8 @@ tk.check_access("myextension_item_create", context, data_dict)
 
 When `check_access` is executed, it inspects the `context["user"]` string (the
 username) and automatically populates `context["auth_user_obj"]` with the
-corresponding `ckan.model.User` database object.
+corresponding `ckan.model.User` database object. For anonymous requests it is
+`None`.
 
 This enables custom auth functions or downstream actions to conveniently
 inspect user attributes (e.g. `user_obj.email`, `user_obj.sysadmin`) directly
@@ -280,11 +277,23 @@ severe authorization leaks (e.g., bypassing permission checks on nested
 operations) and cache contamination.
 
 To prevent context leaking, always wrap the parent context using
-`tk.fresh_context(context)` before passing it to nested action calls.
+`tk.fresh_context(context)` before passing it to nested action calls. Note that
+it keeps `user` and `ignore_auth` (see the warning below).
 
-`fresh_context` returns a clean, isolated copy of the context dictionary that
-retains essential items (like `user` and `session`) but strips out transient
-authorization states, user overrides, and local cached data:
+`fresh_context` returns a copy of the context dictionary that retains only
+essential items: `session`, `user`, `auth_user_obj`, `ignore_auth` and, since
+CKAN 2.10.1, `defer_commit`. CKAN 2.10 and 2.11 also keep `model`; CKAN 2.12
+keeps `context_cache` instead. Everything else, such as a custom `schema`, is
+dropped.
+
+/// admonition | `fresh_context` is not an authorization reset
+    type: warning
+
+The user and `ignore_auth` are copied as-is. If the parent runs with
+`ignore_auth=True`, the nested call skips its permission checks too. Set
+`ignore_auth` explicitly when the nested call must be authorized.
+
+///
 
 ```python
 from typing import Any
@@ -308,7 +317,7 @@ def myextension_item_batch_create(context: types.Context, data_dict: dict[str, A
 ```
 
 1. Authorize the parent batch action
-2. Generate a clean context copy for the nested child action call to ensure authorization checks run independently in the sub-call
+2. Generate a clean context copy for the nested child action call; the child runs its own authorization check unless `ignore_auth` is set
 3. Invoke the child action using the fresh context
 
 ---
@@ -359,8 +368,9 @@ actions**.
 
 Instead, subscribe to CKAN's built-in **`action_succeeded` signal**. This keeps
 your code loosely coupled, prevents execution overhead, and avoids polluting
-the action execution pipeline. Refer to the [Signals](signals.md) guide for
-details on subscribing to event signals.
+the action execution pipeline. Signal handlers still run synchronously, and an
+exception raised by a handler propagates to the caller of the action. Refer to
+the [Signals](signals.md) guide for details on subscribing to event signals.
 
 ///
 

@@ -20,6 +20,7 @@ environment settings (like the test configuration file `CKAN_INI`).
 from __future__ import annotations
 
 import pytest
+from ckan.tests.helpers import CKANCliRunner
 from ckanext.myextension.cli import myextension_command
 
 @pytest.mark.usefixtures("with_plugins")

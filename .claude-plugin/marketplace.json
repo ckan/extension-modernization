@@ -1,0 +1,12 @@
+{
+  "name": "ckan-guidelines",
+  "description": "Shared CKAN extension development guidance and code review.",
+  "owner": {"name": "CKAN Extension Guidelines contributors"},
+  "plugins": [
+    {
+      "name": "extension-modernization",
+      "source": "./",
+      "description": "CKAN development skills and independent review."
+    }
+  ]
+}

@@ -81,20 +81,24 @@ by action itself when you are testing the action.
 ## Context Parameters in Actions
 
 By default, `call_action` executes with a default context containing a database
-session. To test actions under specific circumstances, such as mimicking a
-non-logged-in user, pass a `context` parameter as a second argument to `call_action`:
+session and `ignore_auth=True`, so authorization checks are skipped. To test
+actions under specific circumstances, such as mimicking a non-logged-in user,
+pass a `context` parameter as a second argument to `call_action`:
 
 ```python
+from ckan.plugins.toolkit import NotAuthorized
+
 def test_item_create_anonymous_user(self):
     """Verify anonymous users cannot create items."""
     context = {
         "user": None,
-        "auth_user_obj": None
+        "auth_user_obj": None,
+        "ignore_auth": False,  # call_action skips auth checks by default
     }
     data = {"name": "unauthorized-item"}
 
     # Action should fail authorization
-    with pytest.raises(ValidationError):
+    with pytest.raises(NotAuthorized):
         call_action("myextension_item_create", context, **data)
 ```
 
@@ -127,8 +131,8 @@ search test.
 ```python
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 def test_item_show():
-    # If the item_create action contains a bug, this test will fail,
-    # even if the item_show action works perfectly.
+    # Every test that creates items like this must be updated
+    # whenever the item_create schema changes.
     item = call_action("myextension_item_create", name="my-item")
 
     result = call_action("myextension_item_show", id=item["id"])
@@ -141,8 +145,8 @@ def test_item_show():
 
 ### The Solution: Using Factories for Data Setup
 
-Use **test factories** to populate database states. This isolates your tests:
-if your creation action logic changes, single fix of the factory will restore
+Use **test factories** to populate database states. This centralizes your test
+data: if your creation action logic changes, single fix of the factory will restore
 all the tests. If you are using `*_create` actions directly, you may need to
 review every invocation, adding/changing values according to the schema
 changes.
@@ -150,7 +154,7 @@ changes.
 ```python
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 def test_item_show_with_factory(item_factory):
-    # Factory directly populates the DB table bypassing the create action logic
+    # The factory supplies valid defaults and calls the create action for you
     item = item_factory(name="my-item")
 
     result = call_action("myextension_item_show", id=item["id"])
@@ -240,14 +244,14 @@ the action and can break every time the action is changed.
     type: warning
 
 ```python
-def test_delete_details(self, monkeypatch, sysadmin):
+def test_delete_details(self, monkeypatch, sysadmin, package):
     stub = mock.Mock()
     context = {"user": sysadmin["name"]}
 
-    monkeypatch.setattr(actions, "_internal_function", mock)
-    helpers.call_action("delete_details", context, id=id)
+    monkeypatch.setattr(actions, "_internal_function", stub)
+    helpers.call_action("delete_details", context, id=package["id"])
 
-    assert stub.assert_called()
+    stub.assert_called()
 ```
 
 
@@ -282,8 +286,8 @@ def test_delete_details(self, package_factory):
     type: tip
 
 In the correct example above, the `context` dictionary parameter is omitted
-from `helpers.call_action`. By default, `call_action` runs with an
-authenticated sysadmin context. Passing a custom `context` object to
+from `helpers.call_action`. By default, `call_action` runs with
+`ignore_auth=True`, so permission checks are skipped. Passing a custom `context` object to
 `call_action` is redundant and clutters the test setup unless you are
 explicitly testing permission overrides or auth validation logic (which should
 be isolated in `test_auth.py` files).
